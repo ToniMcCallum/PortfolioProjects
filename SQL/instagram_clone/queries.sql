@@ -1,0 +1,69 @@
+-- 1 finding the 5 oldest users
+SELECT * 
+FROM users
+ORDER BY created_at
+LIMIT 5;
+
+-- 2 what day of the week do most users register, when to schedule a campaignALTER
+SELECT 
+        DAYNAME(created_at) AS day,
+        COUNT(*) AS total
+FROM users
+GROUP BY day
+ORDER BY total DESC
+LIMIT 3;
+
+-- 3 finding inactive users, to target with email campaign
+SELECT username
+FROM users
+LEFT JOIN photos
+    ON users.id = photos.user_id
+WHERE photos.id IS NULL;
+
+-- 4 most likes on a single photo nad return the user also
+SELECT 
+    username,
+    photos.id,
+    photos.image_url,
+    COUNT(*) AS total
+FROM photos
+INNER JOIN likes
+    ON likes.photo_id = photos.id
+INNER JOIN users
+    ON photos.user_id = users.id
+GROUP BY photos.id
+ORDER BY total DESC
+LIMIT 1;
+
+-- 5 average number of photos per user_id
+SELECT (SELECT Count(*) 
+        FROM   photos) / (SELECT Count(*) FROM   users) AS avg; 
+
+
+-- 6 top 5 hashtags
+SELECT tags.tag_name, 
+       COUNT(*) AS total 
+FROM   photo_tags 
+       JOIN tags 
+         ON photo_tags.tag_id = tags.id 
+GROUP  BY tags.id 
+ORDER  BY total DESC 
+LIMIT  5; 
+
+
+-- 7Find users who have liked every photo/ bots
+SELECT username, 
+       Count(*) AS num_likes 
+FROM   users 
+       INNER JOIN likes 
+               ON users.id = likes.user_id 
+GROUP  BY likes.user_id 
+HAVING num_likes = (SELECT Count(*) 
+                    FROM   photos); 
+
+
+
+
+
+
+
