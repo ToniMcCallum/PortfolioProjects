@@ -1,0 +1,8 @@
+seaborn
+matplotlib
+numpy
+pandas
+datetime
+plotly
+iso3166
+nbformat>=4.2.0
